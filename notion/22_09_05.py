@@ -17,9 +17,6 @@
 """
 
 import pandas as pd
-import numpy as np
-import os
-import matplotlib.pyplot as plt
 
 TIME_COL = "기간"
 GROUP_COL = "국가명"
@@ -27,7 +24,7 @@ DATA_COL = ["수출건수","수출금액","수입건수","수입금액"]
 DIFF_COL = {"무역수지": ["수출금액","수입금액"]}
 
 # csv_file_path = os.getenv('HOME')+'/aiffel/data_preprocess/data/trade.csv'
-csv_file_path = "C:/workspace/proj_so/data/" + "trade.csv"
+csv_file_path = "C:/workspace/project_so/data/" + "trade.csv"
 trade = pd.read_csv(csv_file_path)
 
 # rule 2-1
