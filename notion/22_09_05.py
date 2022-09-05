@@ -22,6 +22,8 @@ TIME_COL = "기간"
 GROUP_COL = "국가명"
 DATA_COL = ["수출건수","수출금액","수입건수","수입금액"]
 DIFF_COL = {"무역수지": ["수출금액","수입금액"]}
+op_dict = {"무역수지":lambda df,v,idxs : df[v[0]][idxs] - df[v[1]][idxs]}
+
 
 # csv_file_path = os.getenv('HOME')+'/aiffel/data_preprocess/data/trade.csv'
 csv_file_path = "C:/workspace/project_so/data/" + "trade.csv"
@@ -46,7 +48,7 @@ for k in national_group.groups.keys():
     # rule 3-1 exception
     for k, v in DIFF_COL.items():
         diff_idxs = national_df[k].isnull()
-        national_df.loc[diff_idxs,k] = national_df[v[0]][diff_idxs] - national_df[v[1]][diff_idxs]
+        national_df.loc[diff_idxs,k] = op_dict[k](national_df,v,diff_idxs)
 
     concat_df.append(national_df)
 
