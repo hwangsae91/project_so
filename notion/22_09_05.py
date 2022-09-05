@@ -21,8 +21,8 @@ import pandas as pd
 TIME_COL = "기간"
 GROUP_COL = "국가명"
 DATA_COL = ["수출건수","수출금액","수입건수","수입금액"]
-DIFF_COL = {"무역수지": ["수출금액","수입금액"]}
-op_dict = {"무역수지":lambda df,v,idxs : df[v[0]][idxs] - df[v[1]][idxs]}
+DIFF_COL = ["무역수지"]
+op_dict = {"무역수지":lambda df,idxs : df["수출금액"][idxs] - df["수입금액"][idxs]}
 
 
 # csv_file_path = os.getenv('HOME')+'/aiffel/data_preprocess/data/trade.csv'
@@ -46,9 +46,9 @@ for k in national_group.groups.keys():
     # rule 3-1
     national_df[DATA_COL] = national_df[DATA_COL].interpolate(method="linear")
     # rule 3-1 exception
-    for k, v in DIFF_COL.items():
-        diff_idxs = national_df[k].isnull()
-        national_df.loc[diff_idxs,k] = op_dict[k](national_df,v,diff_idxs)
+    for c in DIFF_COL:
+        diff_idxs = national_df[c].isnull()
+        national_df.loc[diff_idxs,c] = op_dict[c](national_df,diff_idxs)
 
     concat_df.append(national_df)
 
