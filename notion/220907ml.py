@@ -143,6 +143,9 @@ def forword_reduce(x:np.ndarray, vectors:List[np.ndarray], bias:List[np.ndarray]
     신경망의 누적 연산을 통한 예측결과 도출
     레이어의 층수에 상관없이 연산가능
 
+    각 레이어의 연산은 아래와 같다
+    Aⁿ = function(XWⁿ + Bⁿ)
+
     Parameters
     ----------
     x : ndarray
@@ -191,6 +194,9 @@ def forword(network:Dict[str, np.ndarray], x:np.ndarray) -> np.ndarray:
     """
     신경망의 누적 연산을 통한 예측결과 도출
     3층 신경망에만 해당
+
+    각 레이어의 연산은 아래와 같다
+    Aⁿ = function(XWⁿ + Bⁿ)
 
     Parameters
     ----------
