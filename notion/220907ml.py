@@ -12,12 +12,12 @@ def step_func(x:np.ndarray)->np.ndarray:
     Parameters
     ----------
     x : ndarray
-        적용할 백터
+        적용할 벡터
     
     Returns
     ----------
     ndarray
-        계단함수가 적용된 백터
+        계단함수가 적용된 벡터
 
     See Also
     --------
@@ -38,12 +38,12 @@ def sigmode(x:Union[np.ndarray, numbers.Number]) -> Union[np.ndarray, numbers.Nu
     Parameters
     ----------
     x : ndarray or numberic
-        적용할 백터 혹은 숫자
+        적용할 벡터 혹은 숫자
     
     Returns
     ----------
     ndarray or numberic
-        시그모이드함수가 적용된 백터
+        시그모이드함수가 적용된 벡터
 
     See Also
     --------
@@ -67,12 +67,12 @@ def relu(x:Union[np.ndarray, numbers.Number]) -> Union[np.ndarray, numbers.Numbe
     Parameters
     ----------
     x : ndarray or numberic
-        적용할 백터 혹은 숫자
+        적용할 벡터 혹은 숫자
     
     Returns
     ----------
     ndarray or numberic
-        렐루함수가 적용된 백터
+        렐루함수가 적용된 벡터
 
     See Also
     --------
@@ -149,18 +149,18 @@ def forword_reduce(x:np.ndarray, vectors:List[np.ndarray], bias:List[np.ndarray]
     Parameters
     ----------
     x : ndarray
-        입력백터
+        입력벡터
     vectors : list of ndarray
-        각 층의 백터
+        각 층의 벡터
     bias : list of ndarray
-        각 층의 편향백터
+        각 층의 편향벡터
     func : list of FunctionType
         각 층의 활성 혹은 항등함수
 
     Returns
     ----------
     ndarray
-        신경망을 통한 예측결과를 백터로 출력
+        신경망을 통한 예측결과를 벡터로 출력
 
     See Also
     --------
@@ -203,12 +203,12 @@ def forword(network:Dict[str, np.ndarray], x:np.ndarray) -> np.ndarray:
     network : dict of str and ndarray
         3층 신경망 데이터
     x : ndarray
-        입력백터
+        입력벡터
 
     Returns
     ----------
     ndarray
-        신경망을 통한 예측결과를 백터로 출력
+        신경망을 통한 예측결과를 벡터로 출력
 
     See Also
     --------
