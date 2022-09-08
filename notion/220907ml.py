@@ -48,11 +48,11 @@ def forword(network:dict, x:np.ndarray) -> np.ndarray:
 network = init_network_matrix()
 x = np.array([1.0, 0.5])
 y = forword(network, x)
-print(y)
+print(f"forword func:{y}")
 
 vectors = [network["W1"], network["W2"], network["W3"]]
 bias = [network["b1"], network["b2"], network["b3"]]
 func = [sigmode, sigmode, identity_func]
 
 y2= forword_reduce(x, vectors, bias, func)
-print(y2)
+print(f"forword_reduce func:{y2}")
