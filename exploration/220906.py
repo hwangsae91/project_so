@@ -1,22 +1,22 @@
 """
 exploration 1번째 과제
+@auther 황한용(3기/쏘카)
 """
 
-from types import FunctionType
-from typing import Dict, List, Tuple, Union
 import numpy as np
 import pandas as pd
+from types import FunctionType
+from typing import Dict, List, Tuple, Union
 
 from matplotlib import pyplot as plt
 from sklearn import svm
 from sklearn.base import BaseEstimator
-from sklearn.datasets import load_digits, load_wine
+from sklearn.datasets import load_digits, load_wine, load_breast_cancer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, SGDClassifier
-from sklearn.metrics import f1_score, balanced_accuracy_score
+from sklearn.metrics import f1_score, balanced_accuracy_score, recall_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.utils._bunch import Bunch
 from sklearn.tree import DecisionTreeClassifier
 
 BAR_WIDTH = 0.15
@@ -121,7 +121,7 @@ def load_models() -> List[BaseEstimator]:
         , LogisticRegression(**linear_model_kwargs)
     ]
 
-def tarin_n_pred_digit_model(
+def tarin_n_pred_f1_n_balanced(
     x_train:np.ndarray
     , x_test:np.ndarray
     , y_train:np.ndarray
@@ -129,7 +129,7 @@ def tarin_n_pred_digit_model(
     , model:BaseEstimator) -> Dict[str,Union[str,float]]:
     """
     train & predict
-    return model's name and percentage of f1, balanced accuracy score
+    return model's name and percent of f1, balanced accuracy score
 
     Parameters
     ----------
@@ -159,6 +159,83 @@ def tarin_n_pred_digit_model(
             , "f1 (%)":round(f1_score(y_test, y_pred, average="macro") * 100, 3)
             , "balanced (%)": round(balanced_accuracy_score(y_test, y_pred) * 100, 3)
             }
+
+def tarin_n_pred_f1_n_recall(
+    x_train:np.ndarray
+    , x_test:np.ndarray
+    , y_train:np.ndarray
+    , y_test:np.ndarray
+    , model:BaseEstimator) -> Dict[str,Union[str,float]]:
+    """
+    train & predict
+    return model's name and percent of recall and f1 score
+
+    Parameters
+    ----------
+    x_train : ndarray
+        input of tarin data
+    x_test : ndarray
+        input of test data
+    y_train : ndarray
+        answer of tarin data
+    y_test : ndarray
+        answer of test data
+    model : model instance
+
+    Returns
+    ----------
+    dict
+        {
+            "name": nodel name,
+            "f1(%) : f1 score(%),
+            "recall(%)": recall accuracy score(%)
+        }
+
+    """
+    model.fit(x_train, y_train)
+    y_pred = model.predict(x_test)
+    return {X_AXIS_COL: model.__class__.__name__
+            , "f1 (%)":round(f1_score(y_test, y_pred, average="macro") * 100, 3)
+            , "recall (%)": round(recall_score(y_test, y_pred) * 100, 3)
+            }
+
+def drow_accuancy_by_model_graph(df:pd.DataFrame, graph_name:str) -> None:
+    """
+    draw percent of accuancy by each model`s graph
+
+    Parameters
+    ----------
+    df : DataFrame
+        accuracy of each model`s dataframe
+    graph_name : str
+        graph name
+
+    Returns
+    ----------
+    None
+    """
+    x_axis = df.pop(X_AXIS_COL)
+    
+    fig = plt.figure(figsize=(10,5))
+    gh = fig.add_subplot(1,1,1)
+    xaxis_arr = np.arange(len(df))
+
+    # setting x axis point & label
+    gh.set_xticks(xaxis_arr)
+    gh.set_xticklabels(x_axis)
+    gh.set_xlabel("model`s name")
+    gh.set_ylabel("percent(%)")
+    gh.set_title(graph_name, pad=30)
+
+    # draw each model`s  
+    for idx, col in enumerate(df.columns):
+        x_ = xaxis_arr + BAR_WIDTH * idx
+        gh.bar_label(gh.bar(x_, df[col], BAR_WIDTH, label=col), padding=BAR_VALUE_PADDING, rotation=90)
+
+    # setting legend
+    gh.legend(loc='upper right', bbox_to_anchor=(1.12, 1.15))
+
+    fig.show()
 
 def digit_accuancy_predict() -> None:
     """
@@ -193,28 +270,84 @@ def digit_accuancy_predict() -> None:
 
     # setting each models
     # train & predict
-    pred_accu = pd.DataFrame([tarin_n_pred_digit_model(x_train, x_test, y_train, y_test, model) for model in load_models()])
-    x_axis = pred_accu.pop(X_AXIS_COL)
+    pred_df = pd.DataFrame([tarin_n_pred_f1_n_balanced(x_train, x_test, y_train, y_test, model) for model in load_models()])
+    
+    # draw graph
+    drow_accuancy_by_model_graph(pred_df, "digit accuancy by models")
 
-    # set palette
-    fig = plt.figure(figsize=(10,5))
-    gh = fig.add_subplot(1,1,1)
-    xaxis_arr = np.arange(len(pred_accu))
+def wine_accuancy_predict() -> None:
+    """
+    13가지의 와인을 구분지을 수 있는 속성에 따라
+    3가지의 와인 종류를 각각의 모델에 학습 및 예측을 해보고
+    f1 score, balanced accuracy score를 산출
+    정확도 중 f1 score, balanced accuracy score를 선택한 이유:
+        숫자인식의 이유와 같음
 
-    # setting x axis point & label
-    gh.set_xticks(xaxis_arr)
-    gh.set_xticklabels(x_axis)
-    gh.set_xlabel("model`s name")
-    gh.set_ylabel("percent(%)")
+    Parameters
+    ----------
+    None
 
-    # draw each model`s  
-    for idx, col in enumerate(pred_accu.columns):
-        x_ = xaxis_arr + BAR_WIDTH * idx
-        gh.bar_label(gh.bar(x_, pred_accu[col], BAR_WIDTH, label=col), padding=BAR_VALUE_PADDING, rotation=90)
+    Returns
+    ----------
+    None
+    """
+    # load feature & label data
+    digits_features, digits_labels = load_dataset(load_wine)
 
-    # setting legend
-    plt.legend(loc='upper right', bbox_to_anchor=(1.12, 1.15))
+    # split train & test data
+    x_train, x_test, y_train, y_test = train_test_split(
+                                                        digits_features
+                                                        , digits_labels
+                                                        , **tarins_kwargs
+                                                        )
 
-    fig.show()
+    x_train, x_test, y_train, y_test = split_train_n_test_data(digits_features, digits_labels, tarins_kwargs)
 
-digit_accuancy_predict()
+    # setting each models
+    # train & predict
+    pred_df = pd.DataFrame([tarin_n_pred_f1_n_balanced(x_train, x_test, y_train, y_test, model) for model in load_models()])
+    
+    # draw graph
+    drow_accuancy_by_model_graph(pred_df, "wine accuancy by models")
+
+def breast_cancer_accuancy_predict() -> None:
+    """
+    30가지의 진단에 필요한 속성에 따라
+    양성과 음성결과를 각각의 모델에 학습 및 예측을 해보고
+    f1 score, recall를 산출
+    정확도 중 f1 score, recall를 선택한 이유:
+        해당 데이터는 오진(FN)의 리스크가 크다고 판단하여 recall을 평가지표로 선정
+        recall의 지표만으로 인식편향이 있을 수 있다고 판단,
+        positive값을 우선으로 하는 f1 score을 비교하는 값으로 선정
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    ----------
+    None
+    """
+    # load feature & label data
+    digits_features, digits_labels = load_dataset(load_breast_cancer)
+
+    # split train & test data
+    x_train, x_test, y_train, y_test = train_test_split(
+                                                        digits_features
+                                                        , digits_labels
+                                                        , **tarins_kwargs
+                                                        )
+
+    x_train, x_test, y_train, y_test = split_train_n_test_data(digits_features, digits_labels, tarins_kwargs)
+
+    # setting each models
+    # train & predict
+    pred_df = pd.DataFrame([tarin_n_pred_f1_n_recall(x_train, x_test, y_train, y_test, model) for model in load_models()])
+    
+    # draw graph
+    drow_accuancy_by_model_graph(pred_df, "breast cancer accuancy by models")
+
+if __name__ == "__main__":
+    digit_accuancy_predict()
+    wine_accuancy_predict()
+    breast_cancer_accuancy_predict()
