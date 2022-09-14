@@ -108,7 +108,7 @@ def MSE(y_pred:np.ndarray, y_test:np.ndarray) -> np.ndarray:
     """
     return ((y_pred - y_test)**2).mean()
 # 6
-def loss_by_mse(X:np.ndarray, W:np.ndarray, b:Number, y:np.ndarray) -> np.ndarray:
+def loss_by_mse(X:np.ndarray, W:np.ndarray, b:Number, y:np.ndarray, is_return_pred_y=False) -> Union[np.ndarray, Tuple[np.ndarray, Number]]:
     """
     loss array data by
     linear_model and MSE functions
@@ -123,6 +123,8 @@ def loss_by_mse(X:np.ndarray, W:np.ndarray, b:Number, y:np.ndarray) -> np.ndarra
         bias
     y : ndarray
         true data
+    is_return_pred_y : bool
+        is return predicted value or not
 
     See Also
     ----------
@@ -131,13 +133,16 @@ def loss_by_mse(X:np.ndarray, W:np.ndarray, b:Number, y:np.ndarray) -> np.ndarra
 
     Returns
     ----------
-    ndarray
+    {numberic | (numberic,ndarray)}
         loss data by MSE function
+         or
+        loss data by MSE function and predicted ndarray
     """
-    return MSE(model(X, W, b), y)
+    pred_y = model(X, W, b)
+    return (MSE(pred_y, y), pred_y) if is_return_pred_y else MSE(pred_y, y)
 
 # 7
-def gradient(X:np.ndarray, W:np.ndarray, b:Number, y:np.ndarray) -> np.ndarray:
+def gradient(X:np.ndarray, W:np.ndarray, b:Number, y:np.ndarray) -> Tuple[np.ndarray,Number]:
     """
     gradient array by
     loss_by_mse function
@@ -159,9 +164,11 @@ def gradient(X:np.ndarray, W:np.ndarray, b:Number, y:np.ndarray) -> np.ndarray:
 
     Returns
     ----------
-    dict of ndarray
+    tuple of ndarray and numberic
         dW : ndarray
-            mse data
+            diff of weight ndarray
+        db : numberic
+            diff of bias
     """
     diff_y = model(X, W, b) - y
     dW = 1/len(W) * 2 * X.T.dot(diff_y)
@@ -196,11 +203,16 @@ while True:
 
     # check cond
     if not(LOSS_STEP_DIFF_MAX > loss_step_diff) and not(LOSS_MAX < L):
-        print(f"train loss = {L:.4f}")
+        print(f"train loss = {L:.5f}")
         break
 
 # 10
 # check score
-pred_y = model(X_test,W,b)
-print(f"test loss = {loss_by_mse(X_test,W,b,y_test):.4f}")
-print()
+pred_L, pred_y = loss_by_mse(X_test,W,b,y_test,True)
+print(f"test loss = {pred_L:.4f}")
+
+# 11
+plt.scatter(X_test[:, 0], y_test, label="true")
+plt.scatter(X_test[:, 0], pred_y, label="pred")
+plt.legend()
+plt.show()
