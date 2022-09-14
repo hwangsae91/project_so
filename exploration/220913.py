@@ -181,14 +181,13 @@ df_X, df_y = diabetes_data.data, diabetes_data.target
 
 # 4
 X_train, X_test, y_train, y_test = train_test_split(df_X, df_y, **train_test_split_kwargs)
-# TODO: min-max scailing
 
 # 5-1
 W = np.random.rand(df_X.shape[-1])
 b = np.random.rand()
 
 # init loss value
-X_loss = 1000000000000000
+X_loss = 3000
 # [previous loss] - [now loss]
 loss_step_diff = 1
 
