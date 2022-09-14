@@ -36,13 +36,11 @@ exploration 2번째 과제
 
 from numbers import Number
 import numpy as np
-from types import FunctionType
-from typing import Dict, List, Tuple, Union
+from typing import Tuple, Union
 
 from matplotlib import pyplot as plt
 from sklearn.datasets import load_diabetes
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
 
 # train_test_split setting options
 train_test_split_kwargs = {
