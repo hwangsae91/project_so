@@ -272,11 +272,11 @@ def bicycle_pred() -> None:
     useless_cols = ["datetime", "casual", "registered"]
     y_col = "count"
 
-    BASE_DIR = Path(os.pardir).parent.absolute()
+    BASE_DIR = Path(__file__).parent.resolve()
     tarins_kwargs = {"random_state":17,"test_size":0.2}
 
     # 1.
-    df = pd.read_csv(os.path.join(BASE_DIR,"data/bike.csv"))
+    df = pd.read_csv(os.path.join(BASE_DIR,"bike.csv"))
 
     # 2.
     df["datetime"] = pd.to_datetime(df["datetime"])
